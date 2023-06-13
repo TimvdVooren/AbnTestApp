@@ -11,13 +11,12 @@ struct ContentView: View {
     @State private var locations: [Location] = []
     
     var body: some View {
+        
         List(locations) { location in
             HStack {
-                if (location.name != nil) {
-                    Text(location.name!)
-                } else {
-                    Text("Unnamed location")
-                }
+                Text(location.name ?? "Unnamed location")
+                Spacer()
+                Image(systemName: "chevron.right")
             }
             .onTapGesture {
                 UIApplication
