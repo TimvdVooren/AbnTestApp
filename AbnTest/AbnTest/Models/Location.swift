@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Location: Identifiable {
+struct Location: Codable, Identifiable {
     let id: UUID
     let name: String?
     let lat: Double
@@ -19,6 +19,18 @@ struct Location: Identifiable {
         self.lat = lat
         self.long = long
     }
+    
+    init(from decoder: Decoder) throws {
+        self.id = UUID()
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.name = try container.decodeIfPresent(String.self, forKey: .name)
+        self.lat = try container.decode(Double.self, forKey: .lat)
+        self.long = try container.decode(Double.self, forKey: .long)
+    }
+}
+
+struct LocationData: Codable {
+    let locations: [Location]
 }
 
 extension Location {
@@ -29,4 +41,29 @@ extension Location {
         Location(name: "Copenhagen", lat: 55.6713442, long: 12.523785),
         Location(lat: 40.4380638, long: -3.7495758)
     ]
+    
+    static func fetchFromApi(completion: @escaping ([Location]) -> ()) {
+        guard let url = URL(string: "https://raw.githubusercontent.com/abnamrocoesd/assignment-ios/main/locations.json") else {
+            fatalError("Invalid URL.")
+        }
+        
+        URLSession.shared.dataTask(with: url) { (data, _, _) in
+            guard let jsonData = data else {
+                print("No data received.")
+                return
+            }
+            
+            do {
+                let decoder = JSONDecoder()
+                let locationData = try decoder.decode(LocationData.self, from: jsonData)
+                
+                DispatchQueue.main.async {
+                    completion(locationData.locations)
+                }
+            } catch {
+                print("Error decoding JSON: \(error)")
+            }
+        }
+        .resume()
+    }
 }
