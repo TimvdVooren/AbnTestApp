@@ -11,7 +11,8 @@ import SwiftUI
 struct AbnTestApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            // TODO: fetch JSON from https://raw.githubusercontent.com/abnamrocoesd/assignment-ios/main/locations.json
+            ContentView(locations: Location.sampleData)
         }
     }
 }

@@ -8,19 +8,21 @@
 import SwiftUI
 
 struct ContentView: View {
+    let locations: [Location]
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+        List(locations) { location in
+            if location.name != nil {
+                Text(location.name!)
+            } else {
+                Text("Unnamed location")
+            }
         }
-        .padding()
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ContentView(locations: Location.sampleData)
     }
 }

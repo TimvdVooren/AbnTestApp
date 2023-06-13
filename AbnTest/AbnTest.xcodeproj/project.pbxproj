@@ -14,6 +14,7 @@
 		849B5FBD2A389B550042805A /* AbnTestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849B5FBC2A389B550042805A /* AbnTestTests.swift */; };
 		849B5FC72A389B560042805A /* AbnTestUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849B5FC62A389B560042805A /* AbnTestUITests.swift */; };
 		849B5FC92A389B560042805A /* AbnTestUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849B5FC82A389B560042805A /* AbnTestUITestsLaunchTests.swift */; };
+		849B5FD72A389BE40042805A /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849B5FD62A389BE30042805A /* Location.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +45,7 @@
 		849B5FC22A389B560042805A /* AbnTestUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AbnTestUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		849B5FC62A389B560042805A /* AbnTestUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbnTestUITests.swift; sourceTree = "<group>"; };
 		849B5FC82A389B560042805A /* AbnTestUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbnTestUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		849B5FD62A389BE30042805A /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +96,7 @@
 		849B5FAA2A389B520042805A /* AbnTest */ = {
 			isa = PBXGroup;
 			children = (
+				849B5FD52A389BD50042805A /* Models */,
 				849B5FAB2A389B520042805A /* AbnTestApp.swift */,
 				849B5FAD2A389B520042805A /* ContentView.swift */,
 				849B5FAF2A389B550042805A /* Assets.xcassets */,
@@ -125,6 +128,14 @@
 				849B5FC82A389B560042805A /* AbnTestUITestsLaunchTests.swift */,
 			);
 			path = AbnTestUITests;
+			sourceTree = "<group>";
+		};
+		849B5FD52A389BD50042805A /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				849B5FD62A389BE30042805A /* Location.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -258,6 +269,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				849B5FAE2A389B520042805A /* ContentView.swift in Sources */,
+				849B5FD72A389BE40042805A /* Location.swift in Sources */,
 				849B5FAC2A389B520042805A /* AbnTestApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
