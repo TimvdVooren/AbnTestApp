@@ -12,10 +12,14 @@ struct ContentView: View {
     
     var body: some View {
         List(locations) { location in
-            if location.name != nil {
-                Text(location.name!)
-            } else {
-                Text("Unnamed location")
+            HStack {
+                Text(location.name)
+            }
+            .onTapGesture {
+                UIApplication
+                    .shared
+                    .open(URL(string: "wikipedia://places?lat=\(location.lat)?long=\(location.long)")!)
+                
             }
         }
     }
