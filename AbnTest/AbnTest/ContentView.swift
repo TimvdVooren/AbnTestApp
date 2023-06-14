@@ -21,6 +21,7 @@ struct ContentView: View {
                         Spacer()
                         Image(systemName: "chevron.right")
                     }
+                    .contentShape(Rectangle())
                     .onTapGesture {
                         UIApplication
                             .shared
