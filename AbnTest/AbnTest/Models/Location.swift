@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CoreLocation
 
 struct Location: Codable, Identifiable {
     let id: UUID
@@ -65,5 +66,26 @@ extension Location {
             }
         }
         .resume()
+    }
+    
+    static func getCoordinatesByCityName(cityName: String, completion: @escaping (CLLocationCoordinate2D?) -> Void) {
+        let geocoder = CLGeocoder()
+        
+        geocoder.geocodeAddressString(cityName) { (placemarks, error) in
+            if let error = error {
+                print("Geocoding error: \(error.localizedDescription)")
+                completion(nil)
+                return
+            }
+            
+            guard let placemark = placemarks?.first,
+                  let location = placemark.location else {
+                completion(nil)
+                return
+            }
+            
+            let coordinates = location.coordinate
+            completion(coordinates)
+        }
     }
 }

@@ -38,14 +38,26 @@ struct ContentView: View {
                 HStack {
                     TextField("New location", text: $newLocationName)
                     
-                    var lat = 0.0
-                    var long = 0.0
-                    
                     Button(action: {
                         withAnimation {
-                            let location = Location(name: newLocationName, lat: lat, long: long)
-                            locations.append(location)
-                            newLocationName = ""
+                            var lat = 0.0
+                            var long = 0.0
+                            
+                            Location.getCoordinatesByCityName(cityName: newLocationName) { coordinates in
+                                if let coordinates = coordinates {
+                                    print("Latitude: \(coordinates.latitude), Longitude: \(coordinates.longitude)")
+                                    
+                                    lat = coordinates.latitude
+                                    long = coordinates.longitude
+                                    
+                                    let location = Location(name: newLocationName, lat: lat, long: long)
+                                    locations.append(location)
+                                } else {
+                                    print("Unable to retrieve coordinates")
+                                }
+                                
+                                newLocationName = ""
+                            }
                         }
                     }) {
                         Image(systemName: "plus.circle.fill")
