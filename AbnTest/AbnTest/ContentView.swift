@@ -21,7 +21,7 @@ struct ContentView: View {
             .onTapGesture {
                 UIApplication
                     .shared
-                    .open(URL(string: "wikipedia://places?lat=\(location.lat)?long=\(location.long)")!)
+                    .open(URL(string: "wikipedia://places?lat=\(location.lat)&long=\(location.long)")!)
             }
         }
         .onAppear {

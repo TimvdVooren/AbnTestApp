@@ -20,24 +20,24 @@ __attribute__((annotate("returns_localized_nsstring"))) static inline NSString *
 
 + (void)wmf_makeActivityActive:(NSUserActivity *)activity {
     static NSUserActivity *_current = nil;
-
+    
     if (_current) {
         [_current invalidate];
         _current = nil;
     }
-
+    
     _current = activity;
     [_current becomeCurrent];
 }
 
 + (instancetype)wmf_activityWithType:(NSString *)type {
     NSUserActivity *activity = [[NSUserActivity alloc] initWithActivityType:[NSString stringWithFormat:@"org.wikimedia.wikipedia.%@", [type lowercaseString]]];
-
+    
     activity.eligibleForHandoff = YES;
     activity.eligibleForSearch = YES;
     activity.eligibleForPublicIndexing = YES;
     activity.keywords = [NSSet setWithArray:@[@"Wikipedia", @"Wikimedia", @"Wiki"]];
-
+    
     return activity;
 }
 
@@ -45,11 +45,11 @@ __attribute__((annotate("returns_localized_nsstring"))) static inline NSString *
     NSUserActivity *activity = [self wmf_activityWithType:[pageName lowercaseString]];
     activity.title = wmf_localizationNotNeeded(pageName);
     activity.userInfo = @{@"WMFPage": pageName};
-
+    
     NSMutableSet *set = [activity.keywords mutableCopy];
     [set addObjectsFromArray:[pageName componentsSeparatedByString:@" "]];
     activity.keywords = set;
-
+    
     return activity;
 }
 
@@ -59,17 +59,29 @@ __attribute__((annotate("returns_localized_nsstring"))) static inline NSString *
     return activity;
 }
 
-// TODO: change this code so it opens the places tab at a specific coordinate
 + (instancetype)wmf_placesActivityWithURL:(NSURL *)activityURL {
     NSURLComponents *components = [NSURLComponents componentsWithURL:activityURL resolvingAgainstBaseURL:NO];
+    
     NSURL *articleURL = nil;
+    double latitude = 0.0;
+    double longitude = 0.0;
+    
     for (NSURLQueryItem *item in components.queryItems) {
         if ([item.name isEqualToString:@"WMFArticleURL"]) {
             NSString *articleURLString = item.value;
             articleURL = [NSURL URLWithString:articleURLString];
-            break;
+        } else if ([item.name isEqualToString:@"lat"]) {
+            NSString *latString = item.value;
+            latitude = [latString doubleValue];
+        } else if ([item.name isEqualToString:@"long"]) {
+            NSString *longString = item.value;
+            longitude = [longString doubleValue];
         }
     }
+    
+    NSLog(@"Latitude: %f", latitude);
+    NSLog(@"Longitude: %f", longitude);
+    
     NSUserActivity *activity = [self wmf_pageActivityWithName:@"Places"];
     activity.webpageURL = articleURL;
     return activity;
@@ -119,7 +131,7 @@ __attribute__((annotate("returns_localized_nsstring"))) static inline NSString *
     if (![url.scheme isEqualToString:@"wikipedia"] && ![url.scheme isEqualToString:@"wikipedia-official"]) {
         return nil;
     }
-
+    
     if ([url.host isEqualToString:@"content"]) {
         return [self wmf_contentActivityWithURL:url];
     } else if ([url.host isEqualToString:@"explore"]) {
@@ -158,17 +170,17 @@ __attribute__((annotate("returns_localized_nsstring"))) static inline NSString *
 
 + (instancetype)wmf_articleViewActivityWithURL:(NSURL *)url {
     NSParameterAssert(url.wmf_title);
-
+    
     NSUserActivity *activity = [self wmf_activityWithType:@"article"];
     activity.title = url.wmf_title;
     activity.webpageURL = [NSURL wmf_desktopURLForURL:url];
-
+    
     NSMutableSet *set = [activity.keywords mutableCopy];
     [set addObjectsFromArray:[url.wmf_title componentsSeparatedByString:@" "]];
     activity.keywords = set;
     activity.expirationDate = [[NSDate date] dateByAddingTimeInterval:60 * 60 * 24 * 7];
     activity.contentAttributeSet = url.wmf_searchableItemAttributes;
-
+    
     return activity;
 }
 
@@ -187,23 +199,23 @@ __attribute__((annotate("returns_localized_nsstring"))) static inline NSString *
     if (queryItem) {
         [queryItems addObject:queryItem];
     }
-
+    
     queryItem = [NSURLQueryItem queryItemWithName:@"fulltext" value:@"1"];
     if (queryItem) {
         [queryItems addObject:queryItem];
     }
-
+    
     components.queryItems = queryItems;
     url = [components URL];
-
+    
     NSUserActivity *activity = [self wmf_activityWithType:@"Searchresults"];
-
+    
     activity.title = [NSString stringWithFormat:@"Search for %@", searchTerm];
     activity.webpageURL = url;
-
+    
     activity.eligibleForSearch = NO;
     activity.eligibleForPublicIndexing = NO;
-
+    
     return activity;
 }
 
@@ -240,7 +252,7 @@ __attribute__((annotate("returns_localized_nsstring"))) static inline NSString *
     if (self.wmf_type != WMFUserActivityTypeSearchResults) {
         return nil;
     }
-
+    
     if ([self.activityType isEqualToString:CSQueryContinuationActionType]) {
         return self.userInfo[CSSearchQueryString];
     } else {
